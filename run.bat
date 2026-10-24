@@ -1,8 +1,8 @@
 @echo off
-title JARVIS Voice Assistant
+title  Voice Assistant
 color 0b
 echo ========================================================
-echo             JARVIS VOICE ASSISTANT LAUNCHER
+echo             Aevrix VOICE ASSISTANT LAUNCHER
 echo ========================================================
 echo.
 
@@ -43,13 +43,13 @@ if not exist "requirements_installed.flag" (
     echo.
 )
 
-:: Launch JARVIS
-echo [INFO] Starting JARVIS...
+:: Launch Aevrix
+echo [INFO] Starting Aevrix...
 echo.
 python main.py
 
 echo.
 echo ========================================================
-echo JARVIS session closed. Press any key to exit.
+echo Aevrix session closed. Press any key to exit.
 echo ========================================================
 pause >nul
