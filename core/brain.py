@@ -1,5 +1,5 @@
 """
-Brain of Jarvis:
+Brain of Aevrix:
 Parses user commands, recognizes intents, routes actions, and provides helpful responses.
 """
 

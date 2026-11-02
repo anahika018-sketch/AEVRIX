@@ -1,55 +1,68 @@
 @echo off
-title  Voice Assistant
+title AEVRIX AI - Voice & Intelligence Assistant
 color 0b
-echo ========================================================
-echo             Aevrix VOICE ASSISTANT LAUNCHER
-echo ========================================================
+cd /d "%~dp0"
+
+echo =======================================================================
+echo         AEVRIX AI // CHATGPT & GEMINI STYLE VOICE FRONTEND
+echo =======================================================================
 echo.
 
-:: Check if Python is installed
+:: 1. Verify Python Installation
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [ERROR] Python is not installed or not in PATH!
-    echo Please install Python from https://www.python.org/downloads/
-    echo Make sure to check "Add Python to PATH" during installation.
+    echo [ERROR] Python is not installed or not found in your system PATH!
+    echo Please download and install Python from: https://www.python.org/downloads/
+    echo Remember to check "Add Python to PATH" during installation.
+    echo.
     pause
     exit /b
 )
 
-:: Check if virtual environment exists, if not offer or create
+:: 2. Setup Virtual Environment (venv) if not already created
 if not exist "venv\" (
-    echo [INFO] Creating Python virtual environment...
+    echo [SETUP] Creating isolated Python virtual environment...
     python -m venv venv
+    if %errorlevel% neq 0 (
+        echo [ERROR] Failed to create virtual environment.
+        pause
+        exit /b
+    )
 )
 
-:: Activate virtual environment
+:: 3. Activate Virtual Environment
 if exist "venv\Scripts\activate.bat" (
     call venv\Scripts\activate.bat
 )
 
-:: Install requirements if needed
+:: 4. Install Dependencies if needed
 if not exist "requirements_installed.flag" (
-    echo [INFO] Installing required libraries from requirements.txt...
+    echo [SETUP] Installing required dependencies...
+    python -m pip install --upgrade pip >nul 2>&1
     pip install -r requirements.txt
     if %errorlevel% equ 0 (
         echo Done > requirements_installed.flag
-        echo [INFO] Dependencies installed successfully!
+        echo [OK] All dependencies installed successfully!
     ) else (
-        echo [WARNING] Some dependencies had warnings or issues during install.
-        echo If PyAudio failed on Windows, run:
-        echo   pip install pipwin
-        echo   pipwin install pyaudio
+        echo [WARNING] Some dependencies had install warnings.
     )
     echo.
 )
 
-:: Launch Aevrix
-echo [INFO] Starting Aevrix...
+:: 5. Launch in Google Chrome & Start Server
+echo [LAUNCH] Opening Google Chrome to Aevrix AI...
+start chrome "http://localhost:5000" 2>nul || start msedge "http://localhost:5000" 2>nul
+
+echo [LAUNCH] Starting Aevrix backend engine...
 echo.
-python main.py
+if exist "venv\Scripts\python.exe" (
+    venv\Scripts\python.exe main.py
+) else (
+    python main.py
+)
 
 echo.
-echo ========================================================
+echo =======================================================================
 echo Aevrix session closed. Press any key to exit.
-echo ========================================================
+echo =======================================================================
 pause >nul

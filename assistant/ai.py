@@ -1,8 +1,18 @@
 import os
 import platform
 import urllib.parse
-import requests
-from openai import OpenAI
+import urllib.request
+import json
+
+try:
+    import requests
+except ImportError:
+    requests = None
+
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
 
 
 class AIManager:
@@ -10,8 +20,7 @@ class AIManager:
     def __init__(self):
         api_key = os.getenv("OPENAI_API_KEY", "").strip()
 
-        # Real OpenAI keys always start with 'sk-'
-        if not api_key or api_key == "your_api_key_here" or not api_key.startswith("sk-"):
+        if not OpenAI or not api_key or api_key == "your_api_key_here" or not api_key.startswith("sk-"):
             self.client = None
             return
 
@@ -32,7 +41,7 @@ class AIManager:
             if answer:
                 return answer
 
-        # 2. Try Free AI endpoint (Pollinations.ai - no key needed, returns real AI answers)
+        # 2. Try Free AI endpoint (Pollinations.ai)
         free_ai_answer = self._ask_free_ai(question)
         if free_ai_answer:
             return free_ai_answer
@@ -65,7 +74,7 @@ class AIManager:
                     {
                         "role": "system",
                         "content": (
-                            "You are JARVIS, a helpful voice assistant. "
+                            "You are Aevrix, a helpful voice assistant. "
                             "Give concise, natural answers in 1 to 2 sentences "
                             "suitable for being spoken aloud. Never use markdown symbols like asterisks or hashtags."
                         ),
@@ -81,20 +90,27 @@ class AIManager:
 
     def _ask_free_ai(self, question: str) -> str:
         """Use free AI endpoint to generate direct, spoken answers without an API key."""
+        prompt = (
+            f"You are Aevrix voice assistant. Answer in 1 or 2 concise, clear sentences "
+            f"suitable for being spoken aloud. No markdown symbols: {question}"
+        )
+        encoded = urllib.parse.quote(prompt)
+        url = f"https://text.pollinations.ai/{encoded}?model=openai"
+
         try:
-            prompt = (
-                f"You are Jarvis voice assistant. Answer in 1 or 2 concise, clear sentences "
-                f"suitable for being spoken aloud. No markdown symbols: {question}"
-            )
-            encoded = urllib.parse.quote(prompt)
-            url = f"https://text.pollinations.ai/{encoded}?model=openai"
-            resp = requests.get(url, headers={"User-Agent": "JarvisAssistant/1.0"}, timeout=6)
-            if resp.status_code == 200 and resp.text.strip():
-                answer = resp.text.strip()
-                # Clean any markdown or code artifacts
-                answer = answer.replace("**", "").replace("*", "").replace("#", "").strip()
-                if len(answer) > 10 and not "error" in answer.lower():
-                    return answer
+            if requests:
+                resp = requests.get(url, headers={"User-Agent": "AevrixAssistant/1.0"}, timeout=6)
+                if resp.status_code == 200 and resp.text.strip():
+                    text = resp.text.strip().replace("**", "").replace("*", "").replace("#", "").strip()
+                    if len(text) > 5 and not "error" in text.lower():
+                        return text
+            else:
+                req = urllib.request.Request(url, headers={"User-Agent": "AevrixAssistant/1.0"})
+                with urllib.request.urlopen(req, timeout=6) as response:
+                    body = response.read().decode("utf-8").strip()
+                    text = body.replace("**", "").replace("*", "").replace("#", "").strip()
+                    if len(text) > 5 and not "error" in text.lower():
+                        return text
         except Exception:
             pass
         return None
@@ -125,32 +141,16 @@ class AIManager:
                 return None
 
             encoded = urllib.parse.quote(topic.strip())
-            headers = {"User-Agent": "JarvisAssistant/1.0"}
-
-            # 1. Try direct summary
             url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{encoded}"
-            resp = requests.get(url, headers=headers, timeout=4)
-            if resp.status_code == 200:
-                extract = resp.json().get("extract")
-                if extract:
-                    sentences = extract.split(". ")
-                    return ". ".join(sentences[:2]) + "."
 
-            # 2. Try opensearch to find closest page title
-            search_url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={encoded}&limit=1&namespace=0&format=json"
-            s_resp = requests.get(search_url, headers=headers, timeout=4)
-            if s_resp.status_code == 200:
-                s_data = s_resp.json()
-                if len(s_data) > 1 and s_data[1]:
-                    best_title = s_data[1][0]
-                    best_enc = urllib.parse.quote(best_title)
-                    best_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{best_enc}"
-                    b_resp = requests.get(best_url, headers=headers, timeout=4)
-                    if b_resp.status_code == 200:
-                        extract = b_resp.json().get("extract")
-                        if extract:
-                            sentences = extract.split(". ")
-                            return ". ".join(sentences[:2]) + "."
+            req = urllib.request.Request(url, headers={"User-Agent": "AevrixAssistant/1.0"})
+            with urllib.request.urlopen(req, timeout=4) as response:
+                if response.status == 200:
+                    data = json.loads(response.read().decode("utf-8"))
+                    extract = data.get("extract")
+                    if extract:
+                        sentences = extract.split(". ")
+                        return ". ".join(sentences[:2]) + "."
         except Exception:
             pass
         return None
@@ -160,16 +160,17 @@ class AIManager:
         try:
             encoded = urllib.parse.quote(question.strip())
             url = f"https://api.duckduckgo.com/?q={encoded}&format=json&no_html=1&skip_disambig=1"
-            resp = requests.get(url, headers={"User-Agent": "JarvisAssistant/1.0"}, timeout=4)
-            if resp.status_code == 200:
-                data = resp.json()
-                abstract = data.get("AbstractText", "").strip()
-                if abstract:
-                    sentences = abstract.split(". ")
-                    return ". ".join(sentences[:2]) + "."
-                answer = data.get("Answer", "").strip()
-                if answer:
-                    return answer
+            req = urllib.request.Request(url, headers={"User-Agent": "AevrixAssistant/1.0"})
+            with urllib.request.urlopen(req, timeout=4) as response:
+                if response.status == 200:
+                    data = json.loads(response.read().decode("utf-8"))
+                    abstract = data.get("AbstractText", "").strip()
+                    if abstract:
+                        sentences = abstract.split(". ")
+                        return ". ".join(sentences[:2]) + "."
+                    answer = data.get("Answer", "").strip()
+                    if answer:
+                        return answer
         except Exception:
             pass
         return None

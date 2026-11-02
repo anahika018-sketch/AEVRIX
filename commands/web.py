@@ -1,5 +1,5 @@
 """
-Web and Search commands for Jarvis:
+Web and Search commands for Aevrix voice assistant.
 Opening websites, Google search, YouTube play, and Wikipedia summaries.
 """
 

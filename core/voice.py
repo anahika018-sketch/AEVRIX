@@ -8,7 +8,7 @@ import os
 import subprocess
 import config
 from utils.ui import (
-    print_jarvis,
+    print_Aevrix,
     print_user,
     print_status,
     print_error,
@@ -60,7 +60,7 @@ def speak(text: str) -> None:
     if not text:
         return
 
-    print_jarvis(text)
+    print_Aevrix(text)
 
     # Perform audio speech
     if _tts_type == "pyttsx3" and _tts_engine:

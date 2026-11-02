@@ -1,1 +1,1 @@
-"""Commands package for Jarvis Voice Assistant."""
+"""Commands package for Aevrix Voice Assistant."""

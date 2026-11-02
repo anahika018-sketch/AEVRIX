@@ -1,5 +1,6 @@
 import platform
 import subprocess
+import threading
 import speech_recognition as sr
 import pyttsx3
 
@@ -12,12 +13,13 @@ class SpeechManager:
 
         self._init_tts_engine()
 
-        # Calibrate microphone once at startup
+        # Calibrate microphone in background so GUI is never blocked at startup
+        threading.Thread(target=self._calibrate_mic_async, daemon=True).start()
+
+    def _calibrate_mic_async(self):
         try:
             with sr.Microphone() as source:
-                print("Calibrating microphone for room noise...")
-                self.recognizer.adjust_for_ambient_noise(source, duration=1.0)
-                print("Microphone ready.")
+                self.recognizer.adjust_for_ambient_noise(source, duration=0.8)
         except Exception:
             pass
 
@@ -25,11 +27,9 @@ class SpeechManager:
         """Initialize and configure pyttsx3 text-to-speech engine."""
         try:
             self.engine = pyttsx3.init()
-            # 175-185 wpm is clear, natural conversational speaking rate
             self.engine.setProperty("rate", 180)
             self.engine.setProperty("volume", 1.0)
 
-            # Choose best available voice (David or Zira)
             self.voices = self.engine.getProperty("voices")
             if self.voices:
                 selected_voice = self.voices[0].id
@@ -40,7 +40,6 @@ class SpeechManager:
                         break
                 self.engine.setProperty("voice", selected_voice)
         except Exception as e:
-            print("Notice: TTS Engine initialization:", e)
             self.engine = None
             self.voices = []
 
@@ -68,7 +67,7 @@ class SpeechManager:
         if not text:
             return
 
-        print(f"\nAEVRIX: {text}")
+        print(f"\nJarvis: {text}")
 
         # Method 1: Try fast in-process Windows SAPI voice (COM)
         if platform.system() == "Windows":
@@ -98,7 +97,7 @@ class SpeechManager:
                 except Exception:
                     pass
 
-        # Method 3: Windows PowerShell native SpeechSynthesizer (always plays to active audio device)
+        # Method 3: Windows PowerShell native SpeechSynthesizer
         if platform.system() == "Windows":
             try:
                 safe_text = text.replace("'", "''").replace('"', '`"')
@@ -143,7 +142,7 @@ class SpeechManager:
                 return ""
 
         except (OSError, AttributeError) as mic_err:
-            # Fallback when microphone or PyAudio is not available or not configured
+            # Fallback when microphone or PyAudio is not available
             print(f"\n[Microphone unavailable: {mic_err}]")
             print("[Type your command below instead]:")
             try:

@@ -1,5 +1,5 @@
 """
-System control commands for Jarvis:
+System control commands for Aevrix voice assistant:
 Battery, CPU/RAM stats, Screenshot, Screen Lock, and System App launch.
 """
 

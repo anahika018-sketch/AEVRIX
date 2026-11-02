@@ -30,7 +30,7 @@ def get_weather(city: str = ""):
     speak(f"Checking current weather for {display_city}...")
 
     try:
-        response = requests.get(target_url, timeout=6, headers={"User-Agent": "JarvisVoiceAssistant/1.0"})
+        response = requests.get(target_url, timeout=6, headers={"User-Agent": "AevrixVoiceAssistant/1.0"})
         if response.status_code == 200:
             data = response.json()
             current = data.get("current_condition", [{}])[0]

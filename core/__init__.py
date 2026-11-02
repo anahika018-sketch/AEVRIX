@@ -1,1 +1,1 @@
-"""Core package for Jarvis Voice Assistant."""
+"""Core package for Aevrix Voice Assistant."""

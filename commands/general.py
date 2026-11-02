@@ -64,7 +64,7 @@ def give_quote():
     speak(quote)
 
 def assistant_info():
-    """Introduce Jarvis and explain capabilities."""
+    """Introduce Aevrix and explain capabilities."""
     info = (
         f"I am {config.ASSISTANT_NAME}, your personal desktop voice assistant built in Python. "
         "I can open websites, search Google and YouTube, summarize Wikipedia articles, "

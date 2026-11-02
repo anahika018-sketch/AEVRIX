@@ -1,5 +1,5 @@
 """
-Notes management commands for Jarvis:
+Notes management commands for Aevrix voice assistant.:
 Take quick notes, read saved notes, and clear notes.
 """
 
