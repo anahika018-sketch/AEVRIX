@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aevrix AI // Personal Voice Assistant</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+  <div class="app-container">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-orb"></div>
+          <span class="brand-name">Aevrix <span class="badge">AI</span></span>
+        </div>
+        <button class="icon-btn" id="newChatBtn" title="New Chat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="chat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Chat & Live Voice</span>
+        </button>
+        <button class="nav-item" data-tab="reminders">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Reminders</span>
+          <span class="count-pill" id="remindersCount">0</span>
+        </button>
+        <button class="nav-item" data-tab="notes">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span>Notes Vault</span>
+          <span class="count-pill" id="notesCount">0</span>
+        </button>
+        <button class="nav-item" data-tab="automation">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <span>Desktop Controls</span>
+        </button>
+        <button class="nav-item" data-tab="analytics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Usage Analytics</span>
+        </button>
+      </nav>
+
+      <!-- QUICK TOOLS IN SIDEBAR -->
+      <div class="sidebar-section">
+        <div class="section-title">QUICK AUTOMATION</div>
+        <div class="quick-grid">
+          <button class="quick-pill" onclick="sendQuickCommand('take screenshot')">📸 Screenshot</button>
+          <button class="quick-pill" onclick="sendQuickCommand('mute volume')">🔇 Mute</button>
+          <button class="quick-pill" onclick="sendQuickCommand('volume up')">🔊 Vol Up</button>
+          <button class="quick-pill" onclick="sendQuickCommand('open calculator')">🧮 Calculator</button>
+          <button class="quick-pill" onclick="sendQuickCommand('lock workstation')">🔒 Lock PC</button>
+          <button class="quick-pill" onclick="sendQuickCommand('what time is it')">⏰ Time</button>
+        </div>
+      </div>
+
+      <!-- USER PROFILE FOOTER -->
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar" id="avatarLetter">A</div>
+          <div class="user-meta">
+            <span class="user-name" id="profileUserName">Sir</span>
+            <span class="user-role" id="profileAssistantName">Aevrix Assistant</span>
+          </div>
+        </div>
+        <button class="icon-btn" id="settingsToggleBtn" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CHAT CONTAINER -->
+    <main class="main-content">
+      
+      <!-- TOP STATUS BAR -->
+      <header class="top-nav">
+        <button class="mobile-toggle" id="sidebarToggle">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="model-badge">
+          <span class="sparkle">✦</span>
+          <span id="modelIndicator">Aevrix Live Voice</span>
+          <span class="status-dot"></span>
+        </div>
+        
+        <div class="top-actions">
+          <!-- Continuous Auto-Listen Mode Toggle (Hands-Free) -->
+          <button class="handsfree-toggle-btn active" id="handsFreeToggleBtn" title="Continuous Live Voice (Auto-Listens after speaking)">
+            <span class="pulse-dot"></span>
+            <span id="handsFreeLabel">Hands-Free: ON</span>
+          </button>
+          
+          <button class="voice-toggle-btn" id="voiceMuteToggle" title="Toggle Spoken Responses">
+            <span id="voiceMuteIcon">🔊</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- CHAT VIEW -->
+      <section class="view-panel active" id="viewChat">
+        <div class="chat-scroll-area" id="chatMessages">
+          
+          <!-- WELCOME HERO (Like Gemini / ChatGPT) -->
+          <div class="welcome-hero" id="welcomeHero">
+            <!-- Glowing Voice Orb -->
+            <div class="orb-container">
+              <div class="ai-orb" id="voiceOrb" onclick="toggleVoiceRecording()">
+                <div class="orb-inner"></div>
+                <div class="orb-pulse"></div>
+              </div>
+            </div>
+
+            <h1 class="hero-title">Hello, <span class="highlight" id="heroUser">Sir</span></h1>
+            <p class="hero-subtitle">I am Aevrix. Click the Glowing Orb or tap the mic below to start talking, or type your question.</p>
+
+            <div class="prompt-chips">
+              <button class="chip" onclick="sendQuickCommand('What time and date is it?')">
+                <span class="chip-icon">🕒</span> What time is it?
+              </button>
+              <button class="chip" onclick="sendQuickCommand('Remind me in 10 minutes to review my tasks')">
+                <span class="chip-icon">⏰</span> Remind me in 10 mins
+              </button>
+              <button class="chip" onclick="sendQuickCommand('Take a note that tomorrow is demo day')">
+                <span class="chip-icon">📝</span> Take a quick note
+              </button>
+              <button class="chip" onclick="sendQuickCommand('Show my usage analytics')">
+                <span class="chip-icon">📊</span> Show analytics
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Chat Message Bubbles inserted here -->
+        </div>
+
+        <!-- INPUT DOCK (Like ChatGPT / Gemini) -->
+        <div class="chat-input-dock">
+          <div class="input-card">
+            
+            <!-- Voice Wave Visualizer Line -->
+            <div class="voice-wave-bar" id="voiceWaveBar">
+              <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+              <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+              <span class="listening-text" id="waveText">Listening to your voice... Speak now</span>
+            </div>
+
+            <div class="input-inner">
+              <textarea 
+                id="messageInput" 
+                placeholder="Ask Aevrix anything or speak..." 
+                rows="1"
+                autofocus
+              ></textarea>
+              
+              <div class="input-tools">
+                <!-- Glowing Mic Button -->
+                <button class="mic-btn" id="micBtn" title="Speak with Aevrix (Voice Input)" onclick="toggleVoiceRecording()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                  </svg>
+                </button>
+                
+                <!-- Send Button -->
+                <button class="send-btn" id="sendBtn" onclick="handleSend()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="input-caption">Aevrix Desktop Assistant &bull; Hands-Free Live Voice &bull; Natural Intent Engine</div>
+        </div>
+      </section>
+
+      <!-- REMINDERS VIEW -->
+      <section class="view-panel" id="viewReminders">
+        <div class="panel-header">
+          <h2>Scheduled Reminders</h2>
+          <p>Persistent alerts stored in SQLite that trigger sound & notifications.</p>
+        </div>
+        <div class="panel-content">
+          <div class="card add-box">
+            <h3>Add New Reminder</h3>
+            <div class="form-row">
+              <input type="text" id="remTaskInput" placeholder="What should Aevrix remind you to do?" class="form-input">
+              <input type="number" id="remMinsInput" placeholder="Mins" value="5" min="1" class="form-input small">
+              <button class="btn btn-primary" onclick="createReminderManual()">+ Schedule Reminder</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Active & Pending Reminders</h3>
+              <button class="btn btn-secondary btn-sm" onclick="fetchReminders()">Refresh</button>
+            </div>
+            <div class="items-list" id="remindersList">
+              <div class="empty-state">Loading reminders...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NOTES VIEW -->
+      <section class="view-panel" id="viewNotes">
+        <div class="panel-header">
+          <h2>Notes Vault</h2>
+          <p>Quick memos and recorded items stored persistently in SQLite.</p>
+        </div>
+        <div class="panel-content">
+          <div class="card add-box">
+            <h3>Take a Note</h3>
+            <div class="form-row">
+              <input type="text" id="noteInput" placeholder="Write down anything you want Aevrix to remember..." class="form-input">
+              <button class="btn btn-primary" onclick="createNoteManual()">+ Save Note</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Stored Notes</h3>
+              <button class="btn btn-secondary btn-sm" onclick="fetchNotes()">Refresh</button>
+            </div>
+            <div class="items-list" id="notesList">
+              <div class="empty-state">Loading notes...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AUTOMATION VIEW -->
+      <section class="view-panel" id="viewAutomation">
+        <div class="panel-header">
+          <h2>Native Desktop Automation</h2>
+          <p>Direct hardware controls and app launchers connected to Windows.</p>
+        </div>
+        <div class="panel-content">
+          <div class="grid-2">
+            <div class="card">
+              <h3>🔊 Audio & Media Controls</h3>
+              <div class="btn-group">
+                <button class="btn btn-secondary" onclick="sendQuickCommand('mute volume')">🔇 Mute / Unmute</button>
+                <button class="btn btn-secondary" onclick="sendQuickCommand('volume down')">🔉 Volume Down</button>
+                <button class="btn btn-secondary" onclick="sendQuickCommand('volume up')">🔊 Volume Up</button>
+                <button class="btn btn-primary" onclick="sendQuickCommand('play pause')">⏯️ Play / Pause</button>
+                <button class="btn btn-secondary" onclick="sendQuickCommand('next track')">⏭️ Next Track</button>
+              </div>
+            </div>
+            <div class="card">
+              <h3>🔒 System & Security Actions</h3>
+              <div class="btn-group">
+                <button class="btn btn-secondary" onclick="sendQuickCommand('take screenshot')">📸 Screenshot</button>
+                <button class="btn btn-secondary" onclick="sendQuickCommand('lock workstation')">🔒 Lock Screen</button>
+                <button class="btn btn-secondary" onclick="sendQuickCommand('empty recycle bin')">🗑️ Empty Trash</button>
+                <button class="btn btn-danger" onclick="sendQuickCommand('shutdown computer')">⚡ Shutdown PC</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>🚀 Application Launchers</h3>
+            <div class="app-launcher-grid">
+              <button class="app-btn" onclick="sendQuickCommand('open notepad')">📝 Notepad</button>
+              <button class="app-btn" onclick="sendQuickCommand('open calculator')">🧮 Calculator</button>
+              <button class="app-btn" onclick="sendQuickCommand('open chrome')">🌐 Chrome</button>
+              <button class="app-btn" onclick="sendQuickCommand('open vscode')">💻 VS Code</button>
+              <button class="app-btn" onclick="sendQuickCommand('open task manager')">📈 Task Manager</button>
+              <button class="app-btn" onclick="sendQuickCommand('open file explorer')">📁 File Explorer</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ANALYTICS VIEW -->
+      <section class="view-panel" id="viewAnalytics">
+        <div class="panel-header">
+          <h2>Usage Telemetry & Analytics</h2>
+          <p>Real-time metrics tracking interactions, latency, and success rates.</p>
+        </div>
+        <div class="panel-content">
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-label">TOTAL COMMANDS</span>
+              <span class="kpi-value" id="kpiTotal">0</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">TODAY'S USAGE</span>
+              <span class="kpi-value" id="kpiToday">0</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">SUCCESS RATE</span>
+              <span class="kpi-value" id="kpiRate">100%</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">AVG LATENCY</span>
+              <span class="kpi-value" id="kpiAvg">0 ms</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Top Recognized Intents</h3>
+              <button class="btn btn-secondary btn-sm" onclick="fetchAnalytics()">Refresh</button>
+            </div>
+            <div id="topIntentsContainer" class="intents-container">
+              <div class="empty-state">No interactions recorded yet.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS MODAL / DRAWER -->
+      <div class="settings-modal" id="settingsModal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3>Personalization & Settings</h3>
+            <button class="icon-btn" onclick="toggleSettingsModal(false)">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" id="settingUserName" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>Assistant Name</label>
+              <input type="text" id="settingAssistantName" class="form-input">
+            </div>
+            <div class="form-group">
+              <label>Personality Tone</label>
+              <select id="settingPersonality" class="form-select">
+                <option value="Jarvis">Jarvis (Concise, polite, highly efficient)</option>
+                <option value="Friendly">Friendly (Warm, enthusiastic companion)</option>
+                <option value="Professional">Professional (Crisp, formal executive)</option>
+                <option value="Witty">Witty (Playful, humorous, sarcastic)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Security Level</label>
+              <select id="settingSecurity" class="form-select">
+                <option value="STANDARD">Standard (Confirms destructive actions)</option>
+                <option value="STRICT">Strict (Confirms all system changes)</option>
+                <option value="RELAXED">Relaxed (Auto-approves commands)</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="toggleSettingsModal(false)">Cancel</button>
+            <button class="btn btn-primary" onclick="saveSettings()">Save Preferences</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
